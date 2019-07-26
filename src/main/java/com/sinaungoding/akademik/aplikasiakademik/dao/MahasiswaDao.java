@@ -13,7 +13,10 @@
 package com.sinaungoding.akademik.aplikasiakademik.dao;
 
 import com.sinaungoding.akademik.aplikasiakademik.entity.Mahasiswa;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface MahasiswaDao extends PagingAndSortingRepository<Mahasiswa, String> {
+    public Page<Mahasiswa> getMahasiswaByNamaContaining(String nama, Pageable pageable);
 }

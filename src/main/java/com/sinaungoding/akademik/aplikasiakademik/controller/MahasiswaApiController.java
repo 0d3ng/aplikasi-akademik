@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,13 +39,18 @@ public class MahasiswaApiController {
         return mahasiswaDao.findAll(page);
     }
 
+    @GetMapping("/api/mahasiswaNama")
+    @ResponseBody
+    public Page<Mahasiswa> getAllByNama(@RequestParam(name = "nama") String nama, Pageable pageable) {
+        return mahasiswaDao.getMahasiswaByNamaContaining(nama, pageable);
+    }
+
     @GetMapping("/api/mahasiswa/{nim}")
     @ResponseBody
     public Mahasiswa getByNim(@PathVariable(name = "nim") Mahasiswa mahasiswa) {
         return mahasiswa;
     }
 
-    @Transactional
     @PostMapping("/api/mahasiswa")
     @ResponseStatus(HttpStatus.CREATED)
     public void insert(@RequestBody @Valid Mahasiswa mahasiswa) {
