@@ -45,9 +45,9 @@ public class MahasiswaApiController {
         return mahasiswaDao.getMahasiswaByNamaContaining(nama, pageable);
     }
 
-    @GetMapping("/api/mahasiswa/{nim}")
+    @GetMapping("/api/mahasiswa/{id}")
     @ResponseBody
-    public Mahasiswa getByNim(@PathVariable(name = "nim") Mahasiswa mahasiswa) {
+    public Mahasiswa getByNim(@PathVariable(name = "id") Mahasiswa mahasiswa) {
         return mahasiswa;
     }
 
@@ -55,24 +55,23 @@ public class MahasiswaApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public void insert(@RequestBody @Valid Mahasiswa mahasiswa) {
         mahasiswaDao.save(mahasiswa);
-
     }
 
-    @PutMapping("/api/mahasiswa/{nim}")
+    @PutMapping("/api/mahasiswa/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable("nim") String nim, @RequestBody @Valid Mahasiswa mahasiswa) {
-        Mahasiswa mhs = mahasiswaDao.findById("nim").get();
+    public void update(@PathVariable("id") String id, @RequestBody @Valid Mahasiswa mahasiswa) {
+        Mahasiswa mhs = mahasiswaDao.findById("id").get();
         if (mhs == null) {
-            LOGGER.warn("Mahasiswa nim {} tidak ditemukan", nim);
+            LOGGER.warn("Mahasiswa id {} tidak ditemukan", id);
             return;
         }
         BeanUtils.copyProperties(mahasiswa, mhs);
         mahasiswaDao.save(mhs);
     }
 
-    @DeleteMapping("/api/mahasiswa/{nim}")
+    @DeleteMapping("/api/mahasiswa/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable("nim") Mahasiswa mahasiswa) {
+    public void delete(@PathVariable("id") Mahasiswa mahasiswa) {
         if (mahasiswa != null) {
             mahasiswaDao.delete(mahasiswa);
         }
