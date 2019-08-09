@@ -18,12 +18,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 public class MahasiswaApiController {
@@ -47,14 +51,22 @@ public class MahasiswaApiController {
 
     @GetMapping("/api/mahasiswa/{id}")
     @ResponseBody
-    public Mahasiswa getByNim(@PathVariable(name = "id") Mahasiswa mahasiswa) {
+    public Mahasiswa getById(@PathVariable(name = "id") Mahasiswa mahasiswa) {
         return mahasiswa;
     }
 
     @PostMapping("/api/mahasiswa")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void insert(@RequestBody @Valid Mahasiswa mahasiswa) {
-        mahasiswaDao.save(mahasiswa);
+    @ResponseBody
+    public ResponseEntity<String> insert(@RequestBody @Valid Mahasiswa mahasiswa) {
+        try {
+            mahasiswaDao.save(mahasiswa);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Berhasil ditambahkan");
+        } catch (Exception e) {
+            LOGGER.info("DataAccessException");
+            LOGGER.error(null,e);
+            LOGGER.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PutMapping("/api/mahasiswa/{id}")
