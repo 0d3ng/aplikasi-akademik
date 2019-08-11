@@ -56,16 +56,14 @@ public class MahasiswaApiController {
     }
 
     @PostMapping("/api/mahasiswa")
-    @ResponseBody
     public ResponseEntity<String> insert(@RequestBody @Valid Mahasiswa mahasiswa) {
         try {
             mahasiswaDao.save(mahasiswa);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Berhasil ditambahkan");
+            return new ResponseEntity<>("Mahasiswa berhasil ditambahkan", HttpStatus.CREATED);
         } catch (Exception e) {
             LOGGER.info("DataAccessException");
-            LOGGER.error(null,e);
             LOGGER.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
