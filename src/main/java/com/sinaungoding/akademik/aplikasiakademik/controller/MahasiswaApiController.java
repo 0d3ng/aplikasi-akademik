@@ -12,15 +12,14 @@
 
 package com.sinaungoding.akademik.aplikasiakademik.controller;
 
+import com.sinaungoding.akademik.aplikasiakademik.controller.exception.InternalServerErrorException;
 import com.sinaungoding.akademik.aplikasiakademik.dao.MahasiswaDao;
 import com.sinaungoding.akademik.aplikasiakademik.entity.Mahasiswa;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -51,33 +50,35 @@ public class MahasiswaApiController {
     }
 
     @PostMapping("/api/mahasiswa")
-    public ResponseEntity<String> insert(@RequestBody @Valid Mahasiswa mahasiswa) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mahasiswa insert(@RequestBody @Valid Mahasiswa mahasiswa) {
         try {
-            mahasiswaDao.save(mahasiswa);
-            return new ResponseEntity<>("Mahasiswa berhasil ditambahkan", HttpStatus.CREATED);
-        } catch (Exception e){
+            return mahasiswaDao.save(mahasiswa);
+        } catch (Exception e) {
             log.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @PutMapping("/api/mahasiswa/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable("id") String id, @RequestBody @Valid Mahasiswa mahasiswa) {
-        Mahasiswa mhs = mahasiswaDao.findById("id").get();
-        if (mhs == null) {
-            log.warn("Mahasiswa id {} tidak ditemukan", id);
-            return;
+    public Mahasiswa update(@RequestBody @Valid Mahasiswa mahasiswa) {
+        try {
+            return mahasiswaDao.save(mahasiswa);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
         }
-        BeanUtils.copyProperties(mahasiswa, mhs);
-        mahasiswaDao.save(mhs);
     }
 
     @DeleteMapping("/api/mahasiswa/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable("id") Mahasiswa mahasiswa) {
-        if (mahasiswa != null) {
+        try {
             mahasiswaDao.delete(mahasiswa);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 }
