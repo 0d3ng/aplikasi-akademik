@@ -12,11 +12,10 @@
 
 package com.sinaungoding.akademik.aplikasiakademik.controller;
 
+import com.sinaungoding.akademik.aplikasiakademik.controller.exception.InternalServerErrorException;
 import com.sinaungoding.akademik.aplikasiakademik.dao.MahasiswaDao;
 import com.sinaungoding.akademik.aplikasiakademik.entity.Mahasiswa;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@Slf4j
 public class MahasiswaApiController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MahasiswaApiController.class.getName());
 
     @Autowired
     private MahasiswaDao mahasiswaDao;
@@ -45,36 +43,42 @@ public class MahasiswaApiController {
         return mahasiswaDao.getMahasiswaByNamaContaining(nama, pageable);
     }
 
-    @GetMapping("/api/mahasiswa/{nim}")
+    @GetMapping("/api/mahasiswa/{id}")
     @ResponseBody
-    public Mahasiswa getByNim(@PathVariable(name = "nim") Mahasiswa mahasiswa) {
+    public Mahasiswa getById(@PathVariable(name = "id") Mahasiswa mahasiswa) {
         return mahasiswa;
     }
 
     @PostMapping("/api/mahasiswa")
     @ResponseStatus(HttpStatus.CREATED)
-    public void insert(@RequestBody @Valid Mahasiswa mahasiswa) {
-        mahasiswaDao.save(mahasiswa);
-
-    }
-
-    @PutMapping("/api/mahasiswa/{nim}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable("nim") String nim, @RequestBody @Valid Mahasiswa mahasiswa) {
-        Mahasiswa mhs = mahasiswaDao.findById("nim").get();
-        if (mhs == null) {
-            LOGGER.warn("Mahasiswa nim {} tidak ditemukan", nim);
-            return;
+    public Mahasiswa insert(@RequestBody @Valid Mahasiswa mahasiswa) {
+        try {
+            return mahasiswaDao.save(mahasiswa);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
         }
-        BeanUtils.copyProperties(mahasiswa, mhs);
-        mahasiswaDao.save(mhs);
     }
 
-    @DeleteMapping("/api/mahasiswa/{nim}")
+    @PutMapping("/api/mahasiswa/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable("nim") Mahasiswa mahasiswa) {
-        if (mahasiswa != null) {
+    public Mahasiswa update(@RequestBody @Valid Mahasiswa mahasiswa) {
+        try {
+            return mahasiswaDao.save(mahasiswa);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/api/mahasiswa/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable("id") Mahasiswa mahasiswa) {
+        try {
             mahasiswaDao.delete(mahasiswa);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 }
