@@ -15,11 +15,6 @@ services:
     ports:
       - 3306:3306
     restart: always
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 10s
-      interval: 30s
-      retries: 5
     networks:
       - backend
 
@@ -31,6 +26,9 @@ services:
     restart: always
     depends_on:
       - mysql
-    command: bash -c "java -Djava.security.egd=file:/dev/./urandom -jar /opt/app.jar"
+    command: bash -c "java -jar /opt/app.jar"
     networks:
       - backend
+networks:
+  backend:
+    name: backend-network
