@@ -23,8 +23,8 @@ services:
     networks:
       - backend
 
-  service-app:
-    image: 0d3ng/akademik
+  app:
+    image: 0d3ng/komputasi-awan-akademik
     container_name: akademik-app
     ports:
       - 8090:8090

@@ -14,4 +14,3 @@ RUN apk add --no-cache curl
 COPY --from=build /workspace/target/*.jar /opt/app.jar
 
 RUN bash -c 'touch /opt/app.jar'
-#ENTRYPOINT ["java","-Dspring.profiles.active=docker","-Djava.security.egd=file:/dev/./urandom","-jar","/opt/app.jar"]
