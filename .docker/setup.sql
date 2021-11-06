@@ -11,20 +11,15 @@
  */
 
 -- create the databases
-CREATE
-DATABASE IF NOT EXISTS akademik;
+CREATE DATABASE IF NOT EXISTS akademik;
 
 -- create the users for each database
-CREATE
-USER IF NOT EXISTS 'uwais'@'%' IDENTIFIED BY '1234';
-GRANT CREATE
-, ALTER, INDEX, LOCK TABLES, REFERENCES, UPDATE, DELETE, DROP, SELECT, INSERT ON `akademik`.* TO 'uwais'@'%';
+CREATE USER IF NOT EXISTS 'uwais'@'%' IDENTIFIED BY '1234';
+GRANT CREATE, ALTER, INDEX, LOCK TABLES, REFERENCES, UPDATE, DELETE, DROP, SELECT, INSERT ON `akademik`.* TO 'uwais'@'%';
 
-FLUSH
-PRIVILEGES;
+FLUSH PRIVILEGES;
 
-USE
-akademik;
+USE akademik;
 
 CREATE TABLE mahasiswa
 (
@@ -36,9 +31,6 @@ jurusan VARCHAR(25) NOT NULL,
 PRIMARY KEY(nim)
 );
 
-INSERT INTO mahasiswa
-VALUES ('075410099', 'Upin', 4.00, 'Teknologi Informasi');
-INSERT INTO mahasiswa
-VALUES ('075410100', 'Ipin', 4.00, 'Pendidikan Bahasa Inggris');
-INSERT INTO mahasiswa
-VALUES ('075410101', 'Ehsan', 3.99, 'Teknik Sipil');
+INSERT INTO mahasiswa VALUES ('075410099', 'Upin', 4.00, 'Teknologi Informasi');
+INSERT INTO mahasiswa VALUES ('075410100', 'Ipin', 4.00, 'Pendidikan Bahasa Inggris');
+INSERT INTO mahasiswa VALUES ('075410101', 'Ehsan', 3.99, 'Teknik Sipil');
