@@ -10,7 +10,7 @@ services:
       MYSQL_USER: uwais
       MYSQL_PASSWORD: 1234
     volumes:
-      - /opt/data:/var/lib/mysql
+      - /opt/data/mysql:/var/lib/mysql
       - .docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
     ports:
       - 3306:3306
@@ -21,12 +21,14 @@ services:
   app:
     image: 0d3ng/komputasi-awan-akademik
     container_name: akademik-app
+    volumes:
+      - ~/.m2:/root/.m2
     ports:
       - 8090:8090
     restart: always
     depends_on:
       - mysql
-    command: bash -c "java -jar /opt/app.jar"
+    command: bash -c "/opt/wait-for-it.sh --timeout=0 mysql:3306 && java -jar /opt/app.jar"
     networks:
       - backend
 networks:
